@@ -93,7 +93,7 @@ También se fijó `@testing-library/dom@9.3.4` de forma explícita: sin ese pin,
 
 ### 3.8 Aviso de archivos omitidos
 
-El header `X-Skipped-Files` se lee directamente del `response.headers` de axios (ya en minúsculas) y se trata como `0` si no está presente. Cuando es mayor que cero se muestra un `Alert` de advertencia no bloqueante: la tabla se sigue viendo con lo que sí se pudo descargar, pero el usuario sabe que el conjunto está incompleto.
+El header `X-Skipped-Files` se lee directamente del `response.headers` de axios (ya en minúsculas) y se trata como `0` si no está presente. El header `X-Skipped-File-Names` acompaña el conteo con los nombres reales, serializados como JSON por el backend (`["test4.csv","test5.csv"]`); `filesApi.js` lo parsea de forma defensiva y cae a `[]` si viene ausente o mal formado, porque es un detalle complementario al conteo, no algo de lo que dependa el resto de la UI. Cuando el conteo es mayor que cero se muestra un `Alert` de advertencia no bloqueante con los nombres incluidos (ej. "2 archivos no se pudieron descargar del proveedor: test4.csv, test5.csv."): la tabla se sigue viendo con lo que sí se pudo descargar, pero el usuario sabe exactamente qué falta, no solo cuánto.
 
 ### 3.9 `API_BASE_URL` horneado en build, sin proxy en el dev server
 
@@ -117,7 +117,8 @@ Cobertura:
 - **`selectRows`**: aplana correctamente el estado del store, incluyendo archivos con `lines: []`.
 - **`FilesTable`**: encabezados exactos, una fila por entrada, tabla vacía sin romperse.
 - **`FileFilterBar`**: cada tecleo dispara `onSearchTextChange`, Enter dispara `onSearchSubmit`, la selección del `<select>` dispara `onFileNameSelect`, el botón Clear dispara `onClear`.
-- **Integración con MSW v1** (`test/App.integration.test.jsx`): loading → tabla poblada; error 502 → `ErrorAlert` visible; `X-Skipped-Files: 2` → aviso visible; `fileName` inexistente → `ErrorAlert`, nunca un estado vacío disfrazado de éxito; escribir un texto dispara la búsqueda al backend una vez que el debounce se asienta y muestra todos los archivos que matchean; un substring que solo matchea un archivo lo aísla; un substring sin coincidencias muestra el error real del servidor; Enter busca de inmediato sin esperar el debounce.
+- **`SkippedFilesNotice`**: no renderiza nada con `count: 0`; nombra cada archivo omitido; singular/plural correcto para uno solo; cae a un mensaje con solo el conteo si no hay nombres disponibles.
+- **Integración con MSW v1** (`test/App.integration.test.jsx`): loading → tabla poblada; error 502 → `ErrorAlert` visible; `X-Skipped-Files: 2` + `X-Skipped-File-Names` → aviso visible con los nombres; `fileName` inexistente → `ErrorAlert`, nunca un estado vacío disfrazado de éxito; escribir un texto dispara la búsqueda al backend una vez que el debounce se asienta y muestra todos los archivos que matchean; un substring que solo matchea un archivo lo aísla; un substring sin coincidencias muestra el error real del servidor; Enter busca de inmediato sin esperar el debounce.
 
 `npm test` corre completamente contra los mocks de MSW, sin tocar la red real.
 
