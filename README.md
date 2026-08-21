@@ -122,9 +122,4 @@ Cobertura:
 
 `npm test` corre completamente contra los mocks de MSW, sin tocar la red real.
 
-## 5. Qué haría con más tiempo
 
-- Virtualizar la tabla (`react-window` o similar) para volúmenes grandes de filas.
-- Paginación o scroll infinito en el select de servidor cuando la lista de archivos crezca.
-- Internacionalización de los textos de la UI.
-- Tema oscuro.
