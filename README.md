@@ -99,13 +99,6 @@ El header `X-Skipped-Files` se lee directamente del `response.headers` de axios 
 
 `API_BASE_URL` tiene un valor por defecto funcional (`http://localhost:3000`) inyectado vía `DefinePlugin`, sustituible en build con la variable de entorno del mismo nombre si hiciera falta. Como es una URL absoluta, axios llama directamente al API sin pasar por el dev server de Webpack — por eso no hay configuración de proxy: sería código muerto. El cruce de origen lo resuelve el CORS que expone el backend, con lo cual el comportamiento en desarrollo y en producción es idéntico.
 
-### 3.10 Idioma de la UI: español en pantalla, inglés en el código
-
-Todo el texto que ve el usuario (labels, botones, alertas, estado vacío, aviso de omitidos, `<title>`) está en español. El código, los nombres de variables, el JSDoc y los comentarios se mantienen en inglés: es la convención habitual y lo que hace el código legible para cualquier colaborador, independientemente del idioma de la interfaz. Dos excepciones deliberadas quedan en inglés en pantalla:
-
-- **Los encabezados de la tabla** (`File Name`, `Text`, `Number`, `Hex`) porque el enunciado los fija textualmente como requisito de aceptación.
-- **Los mensajes de error que vienen del backend** (`error.message` en el body de la API, ej. "File 'x.csv' was not found") porque son contenido del contrato del API, no texto de la UI: traducirlos requeriría decidir si el API en sí habla español, una decisión de otra capa que no le corresponde al frontend tomar por su cuenta.
-
 ## 4. Testing
 
 Estrategia: testear comportamiento observable (roles, texto visible), nunca detalles de implementación. Consultas por `getByRole` / `getByText`, sin `data-testid` ni selección por clases.
